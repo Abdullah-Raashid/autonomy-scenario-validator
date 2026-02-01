@@ -1,0 +1,5 @@
+/Users/abdullahraashid/Documents/cppProjects/autonomy-scenario-validator/build/CMakeFiles/asv.dir
+/Users/abdullahraashid/Documents/cppProjects/autonomy-scenario-validator/build/CMakeFiles/scenario_playback.dir
+/Users/abdullahraashid/Documents/cppProjects/autonomy-scenario-validator/build/CMakeFiles/smoke_test.dir
+/Users/abdullahraashid/Documents/cppProjects/autonomy-scenario-validator/build/CMakeFiles/edit_cache.dir
+/Users/abdullahraashid/Documents/cppProjects/autonomy-scenario-validator/build/CMakeFiles/rebuild_cache.dir

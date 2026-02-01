@@ -1,0 +1,25 @@
+{
+  "scenario": {
+    "trajectory_file": "../data/sample_trajectory.csv",
+    "obstacles_file": "../data/sample_obstacles.csv",
+    "params": {
+      "max_speed_mps": 15.000000,
+      "max_accel_mps2": 3.000000,
+      "lane_half_width_m": 1.800000,
+      "ego_box": { "w": 2.000000, "h": 4.500000 }
+    },
+    "time_range_s": { "start": 0.000000, "end": 5.000000 }
+  },
+  "summary": {
+    "result": "FAIL",
+    "total_violations": 2,
+    "first_violation_s": 4.000000,
+    "last_violation_s": 5.000000,
+    "counts_by_severity": {"error": 2, "info": 0, "warn": 0},
+    "counts_by_rule": {"lane_boundary": 2}
+  },
+  "violations": [
+    {"t": 4.000000, "rule": "lane_boundary", "severity": "error", "details": "y=2.2 outside lane corridor [-1.8, +1.8]"},
+    {"t": 5.000000, "rule": "lane_boundary", "severity": "error", "details": "y=2.4 outside lane corridor [-1.8, +1.8]"}
+  ]
+}
