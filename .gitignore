@@ -1,0 +1,21 @@
+/build*/
+/out/
+/outputs/
+/.cache/
+/.idea/
+/.vscode/
+.DS_Store
+*.profraw
+*.profdata
+compile_commands.json
+
+# Generated output outside the conventional build/output directories.
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.exe
+/report*.json
+/frame_*.png
+/*.mp4

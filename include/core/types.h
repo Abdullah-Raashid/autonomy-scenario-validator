@@ -1,32 +1,22 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <cstdint>
+#include <cmath>
 
 namespace asv {
-
 struct Vec2 {
-  double x = 0.0;
-  double y = 0.0;
+    double x = 0.0;
+    double y = 0.0;
 };
+inline Vec2 operator+(Vec2 a, Vec2 b) { return {a.x + b.x, a.y + b.y}; }
+inline Vec2 operator-(Vec2 a, Vec2 b) { return {a.x - b.x, a.y - b.y}; }
+inline Vec2 operator*(Vec2 a, double s) { return {a.x * s, a.y * s}; }
+inline double Dot(Vec2 a, Vec2 b) { return a.x * b.x + a.y * b.y; }
+inline double Norm(Vec2 a) { return std::hypot(a.x, a.y); }
 
+// Baseline: w spans world x, h spans world y (independent of vehicle heading).
 struct AABB2 {
-  // axis-aligned bounding box centered at (cx, cy)
-  double cx = 0.0;
-  double cy = 0.0;
-  double w  = 0.0;  // width
-  double h  = 0.0;  // height
+    double cx = 0.0, cy = 0.0, w = 0.0, h = 0.0;
 };
-
-inline bool Intersects(const AABB2& a, const AABB2& b) {
-  const double ax0 = a.cx - a.w * 0.5, ax1 = a.cx + a.w * 0.5;
-  const double ay0 = a.cy - a.h * 0.5, ay1 = a.cy + a.h * 0.5;
-  const double bx0 = b.cx - b.w * 0.5, bx1 = b.cx + b.w * 0.5;
-  const double by0 = b.cy - b.h * 0.5, by1 = b.cy + b.h * 0.5;
-
-  const bool overlapX = (ax0 <= bx1) && (ax1 >= bx0);
-  const bool overlapY = (ay0 <= by1) && (ay1 >= by0);
-  return overlapX && overlapY;
+inline bool Intersects(const AABB2 &a, const AABB2 &b) {
+    return std::abs(a.cx - b.cx) <= (a.w + b.w) * 0.5 && std::abs(a.cy - b.cy) <= (a.h + b.h) * 0.5;
 }
-
 } // namespace asv

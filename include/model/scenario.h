@@ -1,14 +1,12 @@
 #pragma once
-#include "model/trajectory.h"
 #include "model/obstacles.h"
+#include "model/trajectory.h"
 
-namespace asv
-{
+namespace asv {
 
-    struct Scenario
-    {
-        Trajectory ego;
-        Obstacles obstacles;
-    };
+struct Scenario {
+    Trajectory ego;
+    Obstacles obstacles;
+};
 
 } // namespace asv

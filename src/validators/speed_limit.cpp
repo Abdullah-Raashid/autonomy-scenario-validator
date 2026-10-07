@@ -1,29 +1,21 @@
 #include "validators/speed_limit.h"
-#include <cmath>
+#include <algorithm>
+#include <locale>
 #include <sstream>
-
-namespace asv
-{
-
-    void SpeedLimitValidator::Validate(const Scenario &scenario, Report &report) const
-    {
-        const std::vector<TrajectoryPoint> &pts = scenario.ego.points;
-        for (size_t i = 1; i < pts.size(); ++i)
-        {
-            const double dt = pts[i].t - pts[i - 1].t;
-            if (dt <= 1e-9)
-                continue;
-            const double dx = pts[i].x - pts[i - 1].x;
-            const double dy = pts[i].y - pts[i - 1].y;
-            const double v = std::sqrt(dx * dx + dy * dy) / dt;
-
-            if (v > maxSpeedMps_)
-            {
-                std::ostringstream oss;
-                oss << "speed=" << v << " m/s exceeds max=" << maxSpeedMps_ << " m/s";
-                report.Add(pts[i].t, Name(), "warn", oss.str());
-            }
+namespace asv {
+void SpeedLimitValidator::Evaluate(const ValidationContext &ctx, Report &r) const {
+    for (std::size_t i = 0; i < ctx.frames.size(); ++i) {
+        const auto &f = ctx.frames[i];
+        if (!f.velocity)
+            continue;
+        const double value = Norm(*f.velocity);
+        r.metrics.maxSpeedMps = std::max(r.metrics.maxSpeedMps.value_or(0.0), value);
+        if (value > threshold_) {
+            std::ostringstream text;
+            text.imbue(std::locale::classic());
+            text << "velocity magnitude=" << value << " exceeds limit=" << threshold_;
+            r.Add(f.t, Name(), Severity::Warning, text.str(), i);
         }
     }
-
+}
 } // namespace asv

@@ -1,18 +1,15 @@
 #pragma once
 #include "validators/validator.h"
+namespace asv {
+class AccelerationLimitValidator final : public IValidator {
+  public:
+    explicit AccelerationLimitValidator(double threshold) : threshold_(threshold) {
+        RequireNonnegative(threshold, "max acceleration");
+    }
+    std::string Name() const override { return "acceleration_limit"; }
+    void Evaluate(const ValidationContext &context, Report &report) const override;
 
-namespace asv
-{
-
-    class AccelerationLimitValidator : public IValidator
-    {
-    public:
-        explicit AccelerationLimitValidator(double maxAccelMps2) : maxAccelMps2_(maxAccelMps2) {}
-        std::string Name() const override { return "acceleration_limit"; }
-        void Validate(const Scenario &scenario, Report &report) const override;
-
-    private:
-        double maxAccelMps2_;
-    };
-
+  private:
+    double threshold_;
+};
 } // namespace asv

@@ -1,20 +1,12 @@
 #pragma once
-#include <string>
 #include "model/scenario.h"
-
-namespace asv
-{
-
-    class ScenarioLoader
-    {
-    public:
-        // CSV formats:
-        // trajectory: t,x,y
-        // obstacles: id,cx,cy,w,h
-        static bool LoadFromCsv(const std::string &trajPath,
-                                const std::string &obsPath,
-                                Scenario &scenario,
-                                std::string &err);
-    };
-
+#include <string>
+namespace asv {
+class ScenarioLoader {
+  public:
+    // Strict schemas; blank lines ignored; obsPath empty means no obstacles.
+    // On failure, scenario remains unchanged and err contains diagnostic context.
+    static bool LoadFromCsv(const std::string &trajPath, const std::string &obsPath,
+                            Scenario &scenario, std::string &err);
+};
 } // namespace asv

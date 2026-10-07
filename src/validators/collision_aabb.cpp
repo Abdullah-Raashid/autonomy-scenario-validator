@@ -1,32 +1,15 @@
 #include "validators/collision_aabb.h"
-#include <sstream>
-
-namespace asv
-{
-
-    void CollisionAabbValidator::Validate(const Scenario &scenario, Report &report) const
-    {
-        const std::vector<TrajectoryPoint> &pts = scenario.ego.points;
-
-        for (size_t i = 0; i < pts.size(); ++i)
-        {
-            AABB2 ego;
-            ego.cx = pts[i].x;
-            ego.cy = pts[i].y;
-            ego.w = egoW_;
-            ego.h = egoH_;
-
-            for (size_t j = 0; j < scenario.obstacles.items.size(); ++j)
-            {
-                const Obstacle &o = scenario.obstacles.items[j];
-                if (Intersects(ego, o.box))
-                {
-                    std::ostringstream oss;
-                    oss << "ego intersects obstacle id=" << o.id;
-                    report.Add(pts[i].t, Name(), "error", oss.str());
-                }
-            }
+namespace asv {
+void CollisionAabbValidator::Evaluate(const ValidationContext &ctx, Report &r) const {
+    for (std::size_t i = 0; i < ctx.frames.size(); ++i) {
+        const auto &f = ctx.frames[i];
+        const AABB2 ego{f.position.x, f.position.y, xExtent_, yExtent_};
+        for (const auto &o : ctx.scenario.obstacles.items) {
+            const auto pose = ObstacleAt(o, f.t - ctx.frames.front().t);
+            const AABB2 box{pose.center.x, pose.center.y, o.box.w, o.box.h};
+            if (Intersects(ego, box))
+                r.Add(f.t, Name(), Severity::Error, "AABB contact: " + o.id, i);
         }
     }
-
+}
 } // namespace asv

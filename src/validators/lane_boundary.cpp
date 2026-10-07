@@ -1,23 +1,13 @@
 #include "validators/lane_boundary.h"
-#include <sstream>
-#include <cmath>
-
-namespace asv
-{
-
-    void LaneBoundaryValidator::Validate(const Scenario &scenario, Report &report) const
-    {
-        const std::vector<TrajectoryPoint> &pts = scenario.ego.points;
-        for (size_t i = 0; i < pts.size(); ++i)
-        {
-            const double y = pts[i].y;
-            if (std::fabs(y) > halfWidth_)
-            {
-                std::ostringstream oss;
-                oss << "y=" << y << " outside lane corridor [-" << halfWidth_ << ", +" << halfWidth_ << "]";
-                report.Add(pts[i].t, Name(), "error", oss.str());
-            }
-        }
+#include <algorithm>
+namespace asv {
+void LaneBoundaryValidator::Evaluate(const ValidationContext &ctx, Report &r) const {
+    for (std::size_t i = 0; i < ctx.frames.size(); ++i) {
+        const auto &f = ctx.frames[i];
+        const double margin = LaneMargin(EgoAt(f, ego_), halfWidth_);
+        r.metrics.minLaneMarginM = std::min(r.metrics.minLaneMarginM.value_or(margin), margin);
+        if (margin < 0.0)
+            r.Add(f.t, Name(), Severity::Error, "vehicle footprint crosses lane boundary", i);
     }
-
+}
 } // namespace asv
