@@ -3,15 +3,16 @@
 Measured 2026-10-07 (Asia/Tokyo) on a **MacBook Air, Apple M2, 8 GB RAM**, running
 **macOS 27.0.1, arm64**, with **Apple Clang 21.0.0 (clang-2100.3.34.2)**,
 **CMake 4.1.1**, C++17 and CMake **Release** compilation (`-O3 -DNDEBUG`).
-The benchmark binary comes from the fresh source-only core build. OpenCV is not
+The benchmark binary comes from a fresh clone of committed source (`8a531c3`),
+measured after all verification builds completed. OpenCV is not
 linked into the benchmark. No artificial result or comparison to the original
 project is included.
 
 | Workload | Samples | Obstacles | Median | Throughput | Violations/run |
 |---|---:|---:|---:|---:|---:|
-| clear | 10,000 | 20 | 34.89 ms | 286,649 samples/s | 0 |
-| clear | 100,000 | 20 | 345.84 ms | 289,149 samples/s | 0 |
-| stress | 10,000 | 8 | 7.92 ms | 1,263,178 samples/s | 160,000 |
+| clear | 10,000 | 20 | 34.19 ms | 292,482 samples/s | 0 |
+| clear | 100,000 | 20 | 345.70 ms | 289,269 samples/s | 0 |
+| stress | 10,000 | 8 | 8.17 ms | 1,224,715 samples/s | 160,000 |
 
 Each measurement uses six validators, one untimed warmup and five timed engine
 runs. Report count and sample count contribute to the printed checksum. The

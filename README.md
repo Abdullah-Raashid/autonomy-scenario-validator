@@ -167,9 +167,9 @@ Measured on an **Apple M2 MacBook Air, 8 GB RAM**, **Release** build, one warmup
 
 | Workload | Samples | Obstacles | Median | Throughput |
 |---|---:|---:|---:|---:|
-| Clear | 10,000 | 20 | 34.89 ms | 286,649 samples/s |
-| Clear | 100,000 | 20 | 345.84 ms | 289,149 samples/s |
-| Overlapping | 10,000 | 8 | 7.92 ms | 1,263,178 samples/s |
+| Clear | 10,000 | 20 | 34.19 ms | 292,482 samples/s |
+| Clear | 100,000 | 20 | 345.70 ms | 289,269 samples/s |
+| Overlapping | 10,000 | 8 | 8.17 ms | 1,224,715 samples/s |
 
 Includes input invariant checks, shared kinematics, six validators and report
 allocations. Excludes scenario generation, CSV I/O, JSON serialization, report
