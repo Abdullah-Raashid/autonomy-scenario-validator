@@ -19,13 +19,13 @@ production perception system.”
   pipeline using Gaussian filtering, Canny edges, ROI masking, Hough segments and
   geometric filtering with synthetic ground-truth tests.
 - Added GoogleTest/CTest unit and CLI integration coverage, warning-clean builds,
-  ASan/UBSan verification, Linux CI configuration and reproducible benchmarks;
-  validated 41 core checks and 54 OpenCV checks locally, with one codec-dependent
-  video check skipped.
+  ASan/UBSan verification, hosted Linux CI and reproducible benchmarks;
+  verified 41 core checks and all 55 OpenCV-enabled checks in Linux CI.
 
 Use these only after reviewing and understanding the code. Include measured
 throughput with its hardware, sample/obstacle counts and timed scope if asked.
-Do not imply that GitHub CI has run until the workflow completes after publishing.
+Hosted GCC, Clang sanitizer, OpenCV and formatting jobs passed; exact run links
+and the local codec-dependent skip are recorded in [VERIFICATION.md](VERIFICATION.md).
 
 ## Five likely technical questions and answers
 

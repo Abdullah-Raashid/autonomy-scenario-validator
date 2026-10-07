@@ -45,7 +45,8 @@ visual demos; actual benchmarks; CI/format/sanitizer configuration; and technica
 documentation. Generated tracked build files are removed from the repository.
 
 Final committed-source core checks: 41 passed. OpenCV checks: 54 passed, one MP4
-writer check skipped. ASan/UBSan core checks: 41 passed. PNG demos and both lane input modes
-were exercised. The local OpenCV build lacks an MP4 encoder. Hosted Linux CI status is recorded after publication in the verification record;
-optional clang-tidy has not been run locally. See [VERIFICATION.md](VERIFICATION.md)
+writer check skipped. ASan/UBSan core checks: 41 passed. PNG demos and both lane
+input modes were exercised. The local OpenCV build lacks an MP4 encoder. Hosted
+Linux CI passed all four jobs, including all 55 OpenCV-enabled checks and MP4
+encode/decode. Optional clang-tidy has not been run locally. See [VERIFICATION.md](VERIFICATION.md)
 for the complete evidence and [INTERVIEW_PREP.md](INTERVIEW_PREP.md) for résumé/interview material.

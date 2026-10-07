@@ -61,7 +61,32 @@ do not establish real-time performance.
 
 ## Publication verification
 
-Hosted workflow execution and GitHub README rendering are checked after pushing.
-Their exact outcomes will be recorded here once available. Optional clang-tidy
-has not been run locally. PNG export is verified; local MP4 export remains
-unavailable because this OpenCV installation has no encoder.
+Published to `main`. [Hosted C++ CI run 37613380983](https://github.com/Abdullah-Raashid/autonomy-scenario-validator/actions/runs/37613380983)
+completed successfully for commit `594b234e43e4b8e00ce8525a3e0173139e9fe7e1`
+on 2026-10-07. All four Ubuntu 24.04 jobs passed:
+
+| Hosted job | Actual result |
+|---|---|
+| GCC Release | GCC 13.3; warnings-as-errors build; 41/41 checks; sample JSON and benchmark smoke passed |
+| Clang sanitizers | Clang 18.1.3; Debug ASan/UBSan with leak detection; 41/41 checks; sample and benchmark smoke passed |
+| OpenCV Release | System OpenCV 4.6.0; 55/55 checks passed with no skip, including MP4 encode/decode; six dynamic-scenario PNGs and both detected lanes exported |
+| Formatting | clang-format 18 check passed |
+
+The OpenCV artifact `opencv-demo-output` was uploaded successfully (2,917,178
+bytes; artifact ID `11479410937`). The earlier
+[run 37613079468](https://github.com/Abdullah-Raashid/autonomy-scenario-validator/actions/runs/37613079468)
+also passed all four jobs, but reported Node 20 action-runtime deprecation
+warnings. Checkout and artifact upload were updated to documented Node 24
+versions, and the rerun passed without those warnings.
+
+The published GitHub README was inspected in a browser: both PNGs and all five
+badges loaded, the Mermaid diagram rendered, and the hero, commands, JSON and
+tables displayed correctly. Published assets match fresh demo outputs byte for
+byte. Relative documentation links resolve; the current tracked tree contains
+no build outputs or developer-specific absolute paths. Original repository
+history is preserved; removing generated files from the current tree does not
+erase them from earlier commits.
+
+Optional clang-tidy has not been run locally. PNG export is verified on macOS and
+Linux; MP4 export is verified in hosted Linux CI and remains unavailable in the
+local minimal OpenCV installation.
