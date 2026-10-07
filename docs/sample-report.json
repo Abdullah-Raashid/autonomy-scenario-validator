@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "scenario": {
+    "trajectory_file": "data/sample_trajectory.csv",
+    "obstacles_file": "data/sample_obstacles.csv",
+    "sample_count": 6,
+    "time_range_s": {"start": 0, "end": 5},
+    "params": {"max_speed_mps": 15, "max_accel_mps2": 3, "max_jerk_mps3": 5, "lane_half_width_m": 1.8, "near_distance_m": 1, "min_ttc_s": 2, "ego_length_m": 4.5, "ego_width_m": 2}
+  },
+  "summary": {
+    "result": "FAIL",
+    "total_violations": 7,
+    "first_violation_s": 2,
+    "last_violation_s": 5,
+    "counts_by_severity": {"error": 4, "info": 0, "warn": 3},
+    "counts_by_rule": {"collision_obb": 2, "lane_boundary": 2, "ttc": 3}
+  },
+  "metrics": {"max_speed_mps": 9.5021050299394183, "max_accel_mps2": 2.3430749027719964, "max_jerk_mps3": 3.5355339059327386, "min_obstacle_distance_m": 0, "min_lane_margin_m": -1.8667445717671265, "min_ttc_s": 0},
+  "violations": [
+    {"t": 4, "sample_index": 4, "rule": "lane_boundary", "severity": "error", "details": "vehicle footprint crosses lane boundary"},
+    {"t": 5, "sample_index": 5, "rule": "lane_boundary", "severity": "error", "details": "vehicle footprint crosses lane boundary"},
+    {"t": 3, "sample_index": 3, "rule": "collision_obb", "severity": "error", "details": "contact with obstacle coneA"},
+    {"t": 4, "sample_index": 4, "rule": "collision_obb", "severity": "error", "details": "contact with obstacle barrierB"},
+    {"t": 2, "sample_index": 2, "rule": "ttc", "severity": "warn", "details": "predicted contact within TTC threshold: coneA"},
+    {"t": 3, "sample_index": 3, "rule": "ttc", "severity": "warn", "details": "predicted contact within TTC threshold: coneA"},
+    {"t": 4, "sample_index": 4, "rule": "ttc", "severity": "warn", "details": "predicted contact within TTC threshold: barrierB"}
+  ]
+}
