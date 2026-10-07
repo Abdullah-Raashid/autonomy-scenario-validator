@@ -44,6 +44,10 @@ target_include_directories(asv PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_D
 target_link_libraries(asv PUBLIC asv_options)
 add_executable(scenario_playback apps/scenario_playback.cpp)
 target_link_libraries(scenario_playback PRIVATE asv::core)
+add_executable(asv_benchmark benchmarks/validation_benchmark.cpp)
+target_include_directories(asv_benchmark PRIVATE apps)
+target_link_libraries(asv_benchmark PRIVATE asv::core)
+
 if(ASV_WITH_OPENCV)
     find_package(OpenCV 4 REQUIRED COMPONENTS core imgproc imgcodecs videoio)
     add_library(asv_vision src/vision/renderer.cpp src/vision/lane_detector.cpp)
@@ -53,4 +57,31 @@ if(ASV_WITH_OPENCV)
     target_link_libraries(scenario_visualize PRIVATE asv_vision)
     add_executable(lane_detection_demo apps/lane_detection_demo.cpp)
     target_link_libraries(lane_detection_demo PRIVATE asv_vision)
+endif()
+
+if(BUILD_TESTING)
+    include(FetchContent)
+    FetchContent_Declare(googletest
+        URL https://codeload.github.com/google/googletest/tar.gz/refs/tags/v1.17.0
+        URL_HASH SHA256=65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c)
+    set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    add_executable(asv_tests tests/core_tests.cpp tests/io_tests.cpp)
+    target_link_libraries(asv_tests PRIVATE asv::core GTest::gtest_main)
+    include(GoogleTest)
+    gtest_discover_tests(asv_tests)
+    add_test(NAME cli_integration COMMAND ${CMAKE_COMMAND}
+        -DCLI=$<TARGET_FILE:scenario_playback> -DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}
+        -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/cli-report.json -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_integration.cmake)
+    if(ASV_WITH_OPENCV)
+        add_executable(asv_vision_tests tests/vision_tests.cpp)
+        target_link_libraries(asv_vision_tests PRIVATE asv_vision GTest::gtest_main)
+        gtest_discover_tests(asv_vision_tests)
+        add_test(NAME vision_cli_integration COMMAND ${CMAKE_COMMAND}
+            -DLANE=$<TARGET_FILE:lane_detection_demo> -DVISUALIZE=$<TARGET_FILE:scenario_visualize>
+            -DSOURCE=${CMAKE_CURRENT_SOURCE_DIR} -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/vision-cli
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/vision_cli.cmake)
+    endif()
 endif()
