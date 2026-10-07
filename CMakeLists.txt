@@ -8,6 +8,7 @@ include(CTest)
 option(ASV_WITH_OPENCV "Build headless playback and classical vision demos" OFF)
 option(ASV_WARNINGS_AS_ERRORS "Treat project compiler warnings as errors" OFF)
 option(ASV_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+option(ASV_ENABLE_CLANG_TIDY "Run clang-tidy during compilation" OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -31,7 +32,10 @@ elseif(MSVC)
         message(FATAL_ERROR "ASV_ENABLE_SANITIZERS requires GCC or Clang")
     endif()
 endif()
-
+if(ASV_ENABLE_CLANG_TIDY)
+    find_program(ASV_CLANG_TIDY clang-tidy REQUIRED)
+    set(CMAKE_CXX_CLANG_TIDY "${ASV_CLANG_TIDY}")
+endif()
 
 add_library(asv
     src/core/report.cpp src/core/validation.cpp src/geometry/obb.cpp
@@ -84,4 +88,9 @@ if(BUILD_TESTING)
             -DSOURCE=${CMAKE_CURRENT_SOURCE_DIR} -DOUTPUT=${CMAKE_CURRENT_BINARY_DIR}/vision-cli
             -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/vision_cli.cmake)
     endif()
+endif()
+find_program(ASV_CLANG_FORMAT clang-format)
+if(ASV_CLANG_FORMAT)
+    file(GLOB_RECURSE ASV_FORMAT_FILES CONFIGURE_DEPENDS include/*.h src/*.cpp apps/*.h apps/*.cpp tests/*.cpp benchmarks/*.cpp)
+    add_custom_target(format-check COMMAND ${ASV_CLANG_FORMAT} --dry-run --Werror ${ASV_FORMAT_FILES} VERBATIM)
 endif()

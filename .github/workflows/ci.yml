@@ -1,0 +1,73 @@
+name: C++ CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gcc-release
+            compiler: g++
+            type: Release
+            vision: 'OFF'
+            sanitizers: 'OFF'
+          - name: clang-sanitizers
+            compiler: clang++
+            type: Debug
+            vision: 'OFF'
+            sanitizers: 'ON'
+          - name: opencv-release
+            compiler: g++
+            type: Release
+            vision: 'ON'
+            sanitizers: 'OFF'
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OpenCV
+        if: matrix.vision == 'ON'
+        run: sudo apt-get update && sudo apt-get install -y libopencv-dev
+      - name: Configure
+        run: >-
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.type }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+          -DASV_WITH_OPENCV=${{ matrix.vision }}
+          -DASV_ENABLE_SANITIZERS=${{ matrix.sanitizers }}
+          -DASV_WARNINGS_AS_ERRORS=ON
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Test
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: ctest --test-dir build --output-on-failure
+      - name: Run sample and benchmark
+        run: |
+          ./build/scenario_playback --traj data/sample_trajectory.csv --obs data/sample_obstacles.csv --out build/report.json
+          ./build/asv_benchmark --samples 1000 --obstacles 8 --repeats 2
+      - name: Export demos
+        if: matrix.vision == 'ON'
+        run: |
+          ./build/scenario_visualize --traj data/dynamic_trajectory.csv --obs data/dynamic_obstacles.csv --frames build/frames
+          ./build/lane_detection_demo --input data/synthetic_road.png --output build/lanes
+      - uses: actions/upload-artifact@v4
+        if: matrix.vision == 'ON'
+        with:
+          name: opencv-demo-output
+          path: |
+            build/frames
+            build/lanes
+            build/report.json
+  formatting:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y clang-format-18
+      - name: Check format
+        run: git ls-files '*.cpp' '*.h' | xargs clang-format-18 --dry-run --Werror
